@@ -12,8 +12,8 @@ enum {
 #define MAX_FILE_ENTRY_LEN 100
 #define ARRAY_LEN(a) (sizeof(a))/(sizeof(a[0]))
 
-void get_command_and_step(char str[], int len, char cmd[], int *step) {
-
+void get_command_and_step(char str[], int len, char cmd[], int *step)
+{
     for(int i = 0; i < len; i++) {
 	if(str[i] != ' ' && str[i] != '\n' && str[i] != '\0')
 	    cmd[i] = str[i];
@@ -24,7 +24,8 @@ void get_command_and_step(char str[], int len, char cmd[], int *step) {
     }
 }
 
-bool str_cmp(char *s1, char *s2) {
+bool str_cmp(char *s1, char *s2)
+{
     int cnt = 0;
 
     while(*s1 == *s2 && *s1 != '\0' && *s2 != '\0' && *s1 != '\n' && *s2 != '\n') {
@@ -48,9 +49,11 @@ int main(void)
     int depth = 0;
 
     FILE *file = fopen("input.txt", "r");
+    
     if(file) {
 	char str[COUNT_FILE_ENTRIES][MAX_FILE_ENTRY_LEN];
 	int max_chars = 100;
+	
 	for(int i = 0; i < COUNT_FILE_ENTRIES; i++) {
 	    fgets(str[i], max_chars, file);
 
@@ -69,5 +72,7 @@ int main(void)
 
 	printf("x: %d, depth: %d --> x*depth: %d\n", x, depth, x*depth);
     }
+    
+    fclose(file);
     return 0;
 }
