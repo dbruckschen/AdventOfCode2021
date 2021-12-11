@@ -22,6 +22,7 @@ int main(void)
 	}
 	printf("the number of times a depth measurement increasesd: %d\n", increase_cnt);
     }
-    
+
+    fclose(file);
     return 0;
 }

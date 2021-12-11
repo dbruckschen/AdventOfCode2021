@@ -72,5 +72,6 @@ int main(void)
 
 	printf("x: %d, depth: %d --> x*depth: %u\n", x, depth, x*depth);
     }
+    fclose(file);
     return 0;
 }
