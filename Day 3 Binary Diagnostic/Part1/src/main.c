@@ -59,7 +59,6 @@ int main(void)
 
     printf("gamma rate: %u, epsilon rate: %u, power_consumption: %u\n", gamma_rate, epsilon_rate, power_consumption);
 
-
     fclose(file);
     return 0;
 }
