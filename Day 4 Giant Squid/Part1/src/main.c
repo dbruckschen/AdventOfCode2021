@@ -92,17 +92,12 @@ int main(void)
 	int *input = read_bingo_numbers_from_file(file);
 	int **boards = NULL;
 	
-	for(int i = 0; i < arrlen(input); i++) {
-		printf("%d ", input[i]);
-	}
-
 	for(int i = 0; i < 10; i++) {
 		arrput(boards, read_bingo_board(file));
 	}
-	//int *boards = read_bingo_board(file);
-	//int *board2 = read_bingo_board(file);
-	
-	printf("\n-----------------------------\n");
+
+	while(arrput(boards, read_bingo_board(file)))
+		;
 	
 	for(int i = 0; i < arrlen(boards); i++) {
 		for(int k = 0; k < 25; k++) {
