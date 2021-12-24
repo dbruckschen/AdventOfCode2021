@@ -51,7 +51,8 @@ int *read_bingo_numbers_from_file(FILE *f)
 	return final;
 }
 
-bool is_number(char c) {
+bool is_number(char c)
+{
 	return (c >= '0' && c <= '9') ? true : false;
 }
 
@@ -100,7 +101,7 @@ int main(void)
 		;
 	
 	for(int i = 0; i < arrlen(boards); i++) {
-		for(int k = 0; k < 25; k++) {
+		for(int k = 0; k < arrlen(boards[i]); k++) {
 			if(!(k % 5)) {
 				printf("\n");
 			}
