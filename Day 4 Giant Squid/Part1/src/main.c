@@ -13,7 +13,7 @@
 #pragma warning(disable:4706)
 
 // debug build
-#define DEBUG
+//#define DEBUG
 #define ROW_COUNT 5
 #define ROW_WIDTH 5
 
@@ -27,6 +27,7 @@ struct board
 {
 	int board_number;
 	bool bingo;
+	int winning_number;
 	struct field grid[ROW_COUNT][ROW_WIDTH];
 };
 
@@ -102,8 +103,9 @@ int *read_bingo_board(FILE *f)
 	return input;
 }
 
-void check_for_bingo(struct board *boards)
+bool check_for_bingo(struct board *boards)
 {
+	bool found_bingo = false;
 	int horizontal_marker_count = 0;
 	int vertical_marker_count = 0;
 	
@@ -116,6 +118,7 @@ void check_for_bingo(struct board *boards)
 			}
 			if(horizontal_marker_count == 5) {
 				boards[i].bingo = true;
+				found_bingo = true;
 			}
 			horizontal_marker_count = 0;
 		}
@@ -123,22 +126,51 @@ void check_for_bingo(struct board *boards)
 
 	// check for vertical bingo
 	for(int i = 0; i < arrlen(boards); i++) {
-		for(int x = 0; x < ROW_COUNT; x++) {
-			for(int y = 0; y < ROW_WIDTH; y++) {
+		for(int x = 0; x < ROW_WIDTH; x++) {
+			for(int y = 0; y < ROW_COUNT; y++) {
 				if(boards[i].grid[y][x].marked)
 					vertical_marker_count++;
 			}
 			if(vertical_marker_count == 5) {
 				boards[i].bingo = true;
+				found_bingo = true;
 			}
 			vertical_marker_count = 0;
 		}
 	}
+
+	return found_bingo;
 }
 
-int calculate_score(board *b)
+void test_number(struct board *b, int num)
 {
-	
+	for(int i = 0; i < arrlen(b); i++) {
+		for(int y = 0; y < ROW_COUNT; y++) {
+			for(int x = 0; x < ROW_WIDTH; x++) {
+				if(b[i].grid[y][x].value == num) {
+					b[i].grid[y][x].marked = true;
+					if(check_for_bingo(b)) {
+						b[i].winning_number = num;
+					}
+				}
+			}
+		}
+	}
+}
+
+int calculate_score(struct board b)
+{
+	int unmarked_sum = 0;
+
+	for(int y = 0; y < ROW_COUNT; y++) {
+		for(int x = 0; x < ROW_COUNT; x++) {
+			if(!b.grid[y][x].marked) {
+				unmarked_sum += b.grid[y][x].value;
+			}
+		}	
+	}
+
+	return unmarked_sum * b.winning_number;
 }
 
 int main(void)
@@ -190,30 +222,16 @@ int main(void)
 		printf("\n");
 	}
 
-	for(int i = 0; i < arrlen(boards); i++) {
-		for(int y = 0; y < ROW_COUNT; y++) {
-			for(int x = 0; x < ROW_WIDTH; x++) {
-				for(int k = 0; k < 12; k++) {
-					if(boards[i].grid[y][x].value == numbers[k]) {
-						boards[i].grid[y][x].marked = true;
-					}
-					// check for all marked rows/columns (no diagonals) (bingo)
-					// NOTE: for now checking after every number (slow)
-					//check_for_bingo(boards);
-				}
-			}
-		}
+	for(int i = 0; i < arrlen(numbers); i++) {
+		test_number(boards, numbers[i]);
+		for(int j = 0; j < arrlen(boards); j++) {
+			if(boards[j].bingo) {
+				printf("Bingo on board %d\n", boards[j].board_number);
+				int score = calculate_score(boards[j]);
+				printf("%d\n", score);
+				return 0;
+			} 
+		}							
 	}
-
-	check_for_bingo(boards);
-
-	for(int i = 0; i < arrlen(boards); i++) {
-		if(boards[i].bingo) {
-			printf("Bingo on board %d\n", boards[i].board_number);
-		} else {
-			printf("No bingo on board %d\n", boards[i].board_number);
-		}
-	}
-
 	return 0;
 }
